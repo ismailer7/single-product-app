@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Swagger SPA - OpenAPI 3.0
+  contact:
+    email: ismailrzouki7@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://localhost:8080/api/v1
+   
+paths:
+  /greeting:
+    get:
+      tags: 
+        - Greeting
+      operationId: greeting
+      summary: Hello world openApi
+      responses:
+        '200':
+          description: Greeting from SPA.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Hallo Developer!

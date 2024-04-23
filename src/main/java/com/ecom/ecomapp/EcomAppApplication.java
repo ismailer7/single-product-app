@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.ecom.ecomapp.*")
+@ComponentScan(EcomAppConstants.BASE_PACKAGE)
 public class EcomAppApplication {
 
 	public static void main(String[] args) {
