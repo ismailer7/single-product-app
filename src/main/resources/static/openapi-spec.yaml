@@ -25,3 +25,59 @@ paths:
               schema:
                 type: string
                 example: Hallo Developer!
+  /user/auth:
+    post:
+      tags:
+        - Authentication
+      operationId: auth
+      summary: User Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialPayload'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: json
+  
+  /user/create:
+    post:
+      tags:
+        - Authentication
+      operationId: create
+      summary: User Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialPayload'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: json
+                
+components:
+  schemas:
+    CredentialPayload:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "ismaa@ecommapp.com"
+        password:
+          type: string
+          example: "plainText"
+        returnSecureToken:
+          type: boolean
+          example: true
