@@ -2,15 +2,22 @@ package com.ecom.ecomapp.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
 
 import lombok.Data;
 
@@ -28,7 +35,7 @@ public class FirebaseConfig {
 	String firbaseEndpoint;
 
 	@PostConstruct
-	public void initializeFirebaseApp() {
+	public void initializeFirebaseApp() throws InterruptedException, ExecutionException {
 		FileInputStream serviceAccount;
 		try {
 			serviceAccount = new FileInputStream(firebaseAppresourceFile);
