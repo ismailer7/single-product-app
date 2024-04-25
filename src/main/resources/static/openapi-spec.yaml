@@ -56,7 +56,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CredentialPayload'
+              $ref: '#/components/schemas/RegisterPayload'
         required: true
       responses:
         '200':
@@ -111,6 +111,19 @@ paths:
 components:
   schemas:
   
+    UserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "ismaa@ecommapp.com"
+        password:
+          type: string
+          example: "plainText"
+        returnSecureToken:
+          type: boolean
+          example: true
+          
     CredentialPayload:
       type: object
       properties:
@@ -124,15 +137,50 @@ components:
           type: boolean
           example: true
     
+    RegisterPayload:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "ismaa@ecommapp.com"
+        password:
+          type: string
+          example: "plainText"
+        phone:
+          type: string
+          example: +212654741162
+        photo:
+          type: string
+          example: https://i.imgur.com/RzikSN4.png
+    
     ProductDto:
       type: object
       properties:
+        id:
+          type: string
+          example: eafa2FE4FAA334
         name:
           type: string
           example: "KEto"
         price:
           type: string
           example: "120"
+        description:
+          type: string
+          example: Hairlost Keto Bottle for regen Damaged hair or lost, Discover our handmade/bio oil for your hair.
         isActive:
           type: boolean
           example: true
+        isDeleted:
+          type: boolean
+          example: false
+        isPrincipal:
+          type: boolean
+          example: true
+        mainImage:
+          type: string
+          example: https://i.imgur.com/RzikSN4.png
+        subImages:
+          type: array
+          items:
+            type: string

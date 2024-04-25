@@ -2,20 +2,18 @@ package com.ecom.ecomapp.services;
 
 import java.util.List;
 
-import com.ecom.ecomapp.model.CredentialPayload;
-import com.ecom.ecomapp.model.ProductDto;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+public interface IFirebaseService<S, E> {
 
-public interface IFirebaseService {
-
-	void createUser(CredentialPayload payload);
+	E getById(S docId);
 	
-	String auth(CredentialPayload payload);
+	E get(E e);
 	
-	List<QueryDocumentSnapshot> getProducts();
+	List<E> getAll();
 	
-	void addProduct(ProductDto productDto);
+	E create(E entity);
 	
-	void delete(String docId);
+	void delete(S docId);
+	
+	void deletePermanent(S docId);
 	
 }
