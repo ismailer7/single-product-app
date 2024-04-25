@@ -66,9 +66,51 @@ paths:
               schema:
                 type: string
                 example: json
+
+  /product/delete:
+    post:
+      tags:
+        - Product Managment
+      operationId: deleteProduct
+      summary: Delete Product by docId
+      parameters:
+        - in: query
+          name: docId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: json
+
+  /product/add:
+    post:
+      tags:
+        - Product Managment
+      operationId: addProduct
+      summary: add Product to firestore.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDto'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: json
                 
 components:
   schemas:
+  
     CredentialPayload:
       type: object
       properties:
@@ -79,5 +121,18 @@ components:
           type: string
           example: "plainText"
         returnSecureToken:
+          type: boolean
+          example: true
+    
+    ProductDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "KEto"
+        price:
+          type: string
+          example: "120"
+        isActive:
           type: boolean
           example: true

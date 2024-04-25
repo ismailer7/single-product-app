@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ecom.ecomapp.config.FirebaseConfig;
 import com.ecom.ecomapp.model.CredentialPayload;
+import com.ecom.ecomapp.model.ProductDto;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -24,7 +25,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.cloud.FirestoreClient;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +37,8 @@ public class FirebaseServiceImpl implements IFirebaseService {
 	private FirebaseConfig firebaseConfig;
 
 	private final RestTemplate restTemplate;
-	
-	private Firestore db = FirestoreClient.getFirestore();
+
+	private Firestore firestore;
 
 	@Override
 	public void createUser(CredentialPayload payload) {
@@ -70,7 +70,7 @@ public class FirebaseServiceImpl implements IFirebaseService {
 	@Override
 	public List<QueryDocumentSnapshot> getProducts() {
 		try {
-			ApiFuture<QuerySnapshot> query = db.collection("products").get();
+			ApiFuture<QuerySnapshot> query = firestore.collection("products").get();
 			QuerySnapshot querySnapshot;
 			querySnapshot = query.get();
 			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
@@ -89,21 +89,25 @@ public class FirebaseServiceImpl implements IFirebaseService {
 	}
 
 	@Override
-	public void addProduct() {
-		DocumentReference docRef = db.collection("products").document("productid232");
-		// Add document data  with id "alovelace" using a hashmap
+	public void addProduct(ProductDto productDto) {
+		DocumentReference docRef = firestore.collection("products").document();
 		Map<String, Object> data = new HashMap<>();
-		data.put("pname", "CBD Gummies");
-		data.put("price", "78");
-		//asynchronously write data
+		data.put("pname", productDto.getName());
+		data.put("price", productDto.getPrice());
+		// asynchronously write data
 		ApiFuture<WriteResult> result = docRef.set(data);
-		// ...
 		// result.get() blocks on response
 		try {
-			System.out.println("Update time : " + result.get().getUpdateTime());
+			log.debug("Update time : {}", result.get().getUpdateTime());
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void delete(String docId) {
+		ApiFuture<WriteResult> result = firestore.collection("products").document(docId).delete();
+		log.debug("product with docId {} Deleted!", docId);
 	}
 
 }

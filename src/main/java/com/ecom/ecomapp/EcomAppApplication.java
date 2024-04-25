@@ -7,7 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.cloud.FirestoreClient;
 
 @SpringBootApplication
 @ComponentScan(basePackages = EcomAppConstants.BASE_PACKAGE)
@@ -26,5 +28,10 @@ public class EcomAppApplication {
 	SimpleClientHttpRequestFactory requestFactory() {
 		var requestFactory = new SimpleClientHttpRequestFactory();
 		return requestFactory;
+	}
+
+	@Bean
+	Firestore fireStore() {
+		return FirestoreClient.getFirestore();
 	}
 }

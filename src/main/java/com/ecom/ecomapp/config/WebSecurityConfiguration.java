@@ -15,7 +15,7 @@ public class WebSecurityConfiguration {
 			// -- Swagger UI v3 (OpenAPI)
 			"/v3/api-docs/**", "/swagger-ui/**",
 			// public end points
-			"/v1/api/greeting", "/v1/api/auth", };
+			"/v1/api/greeting", "/v1/api/user/auth", };
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

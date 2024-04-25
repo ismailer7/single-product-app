@@ -3,6 +3,7 @@ package com.ecom.ecomapp.services;
 import java.util.List;
 
 import com.ecom.ecomapp.model.CredentialPayload;
+import com.ecom.ecomapp.model.ProductDto;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 public interface IFirebaseService {
@@ -13,6 +14,8 @@ public interface IFirebaseService {
 	
 	List<QueryDocumentSnapshot> getProducts();
 	
-	void addProduct();
+	void addProduct(ProductDto productDto);
+	
+	void delete(String docId);
 	
 }
