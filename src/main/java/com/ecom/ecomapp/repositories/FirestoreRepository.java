@@ -17,5 +17,7 @@ public interface FirestoreRepository {
 	void update(String docId, Map<String, Object> updatePayload);
 	
 	void deletePermanently(String docId);
+	
+	DocumentSnapshot getMainProduct() throws Exception;
 
 }

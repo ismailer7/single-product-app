@@ -16,4 +16,6 @@ public interface IFirebaseService<S, E> {
 	
 	void deletePermanent(S docId);
 	
+	E main();
+	
 }

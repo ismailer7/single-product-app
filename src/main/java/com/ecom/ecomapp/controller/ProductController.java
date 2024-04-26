@@ -39,6 +39,11 @@ public class ProductController implements ProductApi {
 		return new ResponseEntity<String>(product.getId(), HttpStatus.OK);
 	}
 
+	public ResponseEntity<ProductDto> mainProduct() {
+		ProductDto productDto = firebaseProductService.main();
+		return new ResponseEntity<ProductDto>(productDto, HttpStatus.OK);
+	}
+
 	@ExceptionHandler(value = EcomProductServiceException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ErrorResponse handleProductOperationException(EcomProductServiceException ex) {

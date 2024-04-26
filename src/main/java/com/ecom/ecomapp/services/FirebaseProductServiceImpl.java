@@ -101,4 +101,25 @@ public class FirebaseProductServiceImpl implements IFirebaseService<String, Prod
 		return getById(e.getId());
 	}
 
+	@Override
+	public ProductDto main() {
+		DocumentSnapshot documentSnapshot = null;
+		ProductDto product = new ProductDto();
+		try {
+			documentSnapshot = productRepository.getMainProduct();
+			if (documentSnapshot != null) {
+				List<String> subImages = (List<String>) documentSnapshot.get("subImages");
+				product.name(documentSnapshot.getString("pname")).price(documentSnapshot.getString("price"))
+						.description(documentSnapshot.getString("description"))
+						.mainImage(documentSnapshot.getString("mainImage")).isDeleted(false).isPrincipal(true)
+						.isActive(true).subImages(subImages);
+			} else {
+				throw new Exception("No Main Product is Available in Firestore");
+			}
+		} catch (Exception e) {
+			throw new EcomProductServiceException(e.getMessage());
+		}
+		return product;
+	}
+
 }

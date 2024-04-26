@@ -77,4 +77,20 @@ public class ProductFirestoreRepositoryImpl implements FirestoreRepository {
 		product.set(updatePayload);
 	}
 
+	@Override
+	public DocumentSnapshot getMainProduct() throws Exception {
+		List<QueryDocumentSnapshot> documents = new ArrayList<QueryDocumentSnapshot>();
+		try {
+			CollectionReference products = firestore.collection(TARGET_COLLECTION);
+			Query query = products.whereEqualTo("isDeleted", false).whereEqualTo("isPrincipal", true)
+					.whereEqualTo("isActive", true);
+			ApiFuture<QuerySnapshot> querySnapshot = query.get();
+			documents = querySnapshot.get().getDocuments();
+			if(documents != null) return documents.get(0);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new Exception(e.getMessage());
+		}
+		return null;
+	}
+
 }
