@@ -8,11 +8,11 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 public interface FirestoreRepository {
 
-	String add(Map<String, Object> payload);
+	String add(Map<String, Object> payload) throws Exception;
 
-	DocumentSnapshot get(String docId);
+	DocumentSnapshot get(String docId) throws Exception;
 
-	List<QueryDocumentSnapshot> getAll();
+	List<QueryDocumentSnapshot> getAll() throws Exception;
 
 	void update(String docId, Map<String, Object> updatePayload);
 	

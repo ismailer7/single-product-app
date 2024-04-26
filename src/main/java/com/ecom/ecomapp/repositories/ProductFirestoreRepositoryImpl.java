@@ -29,30 +29,27 @@ public class ProductFirestoreRepositoryImpl implements FirestoreRepository {
 	private Firestore firestore;
 
 	@Override
-	public String add(Map<String, Object> data) {
+	public String add(Map<String, Object> data) throws Exception {
+		String returnedDocId = "-1";
 		try {
 			ApiFuture<DocumentReference> docRef = firestore.collection(TARGET_COLLECTION).add(data);
-			return docRef.get().getId();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+			returnedDocId = docRef.get().getId();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new Exception(e.getMessage());
 		}
-		return "-1";
+		return returnedDocId;
 	}
 
 	@Override
-	public List<QueryDocumentSnapshot> getAll() {
+	public List<QueryDocumentSnapshot> getAll() throws Exception {
 		List<QueryDocumentSnapshot> documents = new ArrayList<QueryDocumentSnapshot>();
 		try {
 			CollectionReference products = firestore.collection(TARGET_COLLECTION);
 			Query query = products.whereEqualTo("isDeleted", false);
 			ApiFuture<QuerySnapshot> querySnapshot = query.get();
 			documents = querySnapshot.get().getDocuments();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new Exception(e.getMessage());
 		}
 		return documents;
 	}
@@ -63,14 +60,13 @@ public class ProductFirestoreRepositoryImpl implements FirestoreRepository {
 	}
 
 	@Override
-	public DocumentSnapshot get(String docId) {
+	public DocumentSnapshot get(String docId) throws Exception {
 		DocumentSnapshot productSnapshot = null;
 		try {
 			ApiFuture<DocumentSnapshot> product = firestore.collection(TARGET_COLLECTION).document(docId).get();
 			productSnapshot = product.get();
 		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new Exception(e.getMessage());
 		}
 		return productSnapshot;
 	}

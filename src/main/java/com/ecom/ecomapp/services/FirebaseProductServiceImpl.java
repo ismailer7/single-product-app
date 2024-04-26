@@ -1,5 +1,6 @@
 package com.ecom.ecomapp.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,14 +8,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import com.ecom.ecomapp.config.FirebaseConfig;
+import com.ecom.ecomapp.exception.EcomProductServiceException;
 import com.ecom.ecomapp.model.ProductDto;
 import com.ecom.ecomapp.repositories.ProductFirestoreRepositoryImpl;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import lombok.AllArgsConstructor;
@@ -25,32 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class FirebaseProductServiceImpl implements IFirebaseService<String, ProductDto> {
 
-	private final RestTemplate restTemplate;
-
-	private Firestore firestore;
-
 	private final ProductFirestoreRepositoryImpl productRepository;
-
-//	@Override
-//	public void createUser(CredentialPayload payload) {
-//		UserRecord.CreateRequest uc = new UserRecord.CreateRequest();
-//		uc.setEmail(payload.getEmail());
-//		uc.setPassword(payload.getPassword());
-//		uc.setDisplayName("test");
-//
-//		FirebaseAuth fba = FirebaseAuth.getInstance(FirebaseApp.getInstance());
-//		try {
-//			fba.createUser(uc);
-//			log.debug("User with email {} has been created successfully!", payload.getEmail());
-//		} catch (FirebaseAuthException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
 
 	@Override
 	public List<ProductDto> getAll() {
-		List<QueryDocumentSnapshot> documents = productRepository.getAll();
+		List<QueryDocumentSnapshot> documents = new ArrayList<QueryDocumentSnapshot>();
+		try {
+			documents = productRepository.getAll();
+		} catch (Exception e) {
+			throw new EcomProductServiceException(e.getMessage());
+		}
 		List<ProductDto> productList = documents.stream().map(document -> {
 			return new ProductDto().name(document.get("pname").toString()).price(document.get("price").toString());
 		}).collect(Collectors.toList());
@@ -68,9 +51,15 @@ public class FirebaseProductServiceImpl implements IFirebaseService<String, Prod
 		data.put("description", productDto.getDescription());
 		data.put("mainImage", productDto.getMainImage());
 		data.put("subImages", productDto.getSubImages());
-		String docId = productRepository.add(data);
-		productDto.setId(docId);
-		log.debug("Product with docId '{}' has been added!", docId);
+		data.put("created", Timestamp.of(new Date()));
+		data.put("updated", Timestamp.of(new Date()));
+		try {
+			String docId = productRepository.add(data);
+			productDto.setId(docId);
+			log.debug("Product with docId '{}' has been added!", docId);
+		} catch (Exception e) {
+			throw new EcomProductServiceException(e.getMessage());
+		}
 		return productDto;
 	}
 
@@ -91,12 +80,18 @@ public class FirebaseProductServiceImpl implements IFirebaseService<String, Prod
 
 	@Override
 	public ProductDto getById(String docId) {
-		DocumentSnapshot docSnapshot = productRepository.get(docId);
+		DocumentSnapshot docSnapshot;
+		try {
+			docSnapshot = productRepository.get(docId);
+		} catch (Exception e) {
+			throw new EcomProductServiceException(e.getMessage());
+		}
 		List<String> subImages = (List<String>) docSnapshot.get("subImages");
-		ProductDto productDto = new ProductDto().name(docSnapshot.getString("pname")).price(docSnapshot.getString("price"))
-				.description(docSnapshot.getString("description")).mainImage(docSnapshot.getString("mainImage"))
-				.isActive(docSnapshot.getBoolean("isActive")).isDeleted(docSnapshot.getBoolean("isDeleted"))
-				.isPrincipal(docSnapshot.getBoolean("isPrincipal")).subImages(subImages);
+		ProductDto productDto = new ProductDto().name(docSnapshot.getString("pname"))
+				.price(docSnapshot.getString("price")).description(docSnapshot.getString("description"))
+				.mainImage(docSnapshot.getString("mainImage")).isActive(docSnapshot.getBoolean("isActive"))
+				.isDeleted(docSnapshot.getBoolean("isDeleted")).isPrincipal(docSnapshot.getBoolean("isPrincipal"))
+				.subImages(subImages);
 		log.debug("Retrieve Document with docId '{}': {}", docId, productDto);
 		return productDto;
 	}

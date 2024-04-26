@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.ecom.ecomapp.config.FirebaseConfig;
+import com.ecom.ecomapp.exception.FirebaseAuthenticationException;
 import com.ecom.ecomapp.model.CredentialPayload;
 import com.ecom.ecomapp.model.RegisterPayload;
 import com.ecom.ecomapp.utils.EcomUtils;
@@ -34,6 +35,9 @@ public class FirebaseUserServiceImpl implements AuthService {
 		var request = new HttpEntity<>(payload, headers);
 		String response = restTemplate.postForEntity(firebaseConfig.getFirbaseEndpoint(), request, String.class,
 				firebaseConfig.getFirebaseApiKey()).getBody();
+		if (response == null)
+			throw new FirebaseAuthenticationException(
+					String.format("Failed to Authenticate User with email %s", payload.getEmail()));
 		log.info("Receiving Token from firebase {}", response);
 		return response;
 	}
@@ -54,8 +58,9 @@ public class FirebaseUserServiceImpl implements AuthService {
 			fba.createUser(uc);
 			log.debug("User with email {} has been created successfully!", payload.getEmail());
 		} catch (FirebaseAuthException e) {
-			e.printStackTrace();
-		}	
+			throw new FirebaseAuthenticationException(
+					String.format("Error while registering new Firbase User with email %s", payload.getEmail()));
+		}
 	}
 
 }
