@@ -122,6 +122,70 @@ paths:
                 type: string
                 example: json
                 
+  /payment/create:
+    post:
+      tags:
+        - Payment Gateway
+      operationId: createPI
+      summary: create paymentIntent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentPayload'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: payment intent id
+       
+                
+  /payment/customer:
+    post:
+      tags:
+        - Payment Gateway
+      operationId: addCustomer
+      summary: add stripe customer.
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /payment/confirm:
+    post:
+      tags:
+        - Payment Gateway
+      operationId: confirmPI
+      summary: confirm paymentIntent
+      parameters:
+        - in: query
+          name: paymentIntent
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: paymentIntent ID.
+                
 components:
   schemas:
   
@@ -198,3 +262,28 @@ components:
           type: array
           items:
             type: string
+
+    Customer:
+      type: object
+      properties:
+        name: 
+          $ref: 'Customer'
+     
+    PaymentPayload:
+      type: object
+      properties:
+        amount:
+          type: string
+          example: 299.99
+        currenrcy:
+          type: string
+          example: "usd"
+        description:
+          type: string
+          example: desc
+        customer:
+          type: string
+          example: ismaa
+        automaticPayment:
+           type: boolean
+           example: true
